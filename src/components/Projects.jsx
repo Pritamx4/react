@@ -1,5 +1,11 @@
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import RepelText from './RepelText';
 import ScrambleText from './ScrambleText';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Header strip height (px) visible when cards stack on top of each other
 const HEADER_H = 76;
@@ -53,11 +59,34 @@ const PROJECTS = [
 ];
 
 const Projects = ({ title }) => {
+  const containerRef = useRef(null);
+
+  useGSAP(
+    () => {
+      if (title) {
+        gsap.from('.projects-anim-header', {
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 80%',
+            once: true,
+          },
+          y: 45,
+          opacity: 0,
+          filter: 'blur(8px)',
+          duration: 0.9,
+          ease: 'power3.out',
+          clearProps: 'filter',
+        });
+      }
+    },
+    { scope: containerRef }
+  );
+
   return (
-    <div className="relative w-full bg-(--ink)">
+    <div ref={containerRef} className="relative w-full bg-(--ink)">
       {/* ── Section Title Header ── */}
       {title && (
-        <div className="flex flex-col items-center justify-center gap-3 px-6 py-20 lg:py-28 text-center">
+        <div className="projects-anim-header flex flex-col items-center justify-center gap-3 px-6 py-20 lg:py-28 text-center">
           <span className="font-ui text-[11px] font-medium uppercase tracking-[0.35em] text-(--paper)/60">
             Selected Work
           </span>

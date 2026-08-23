@@ -1,11 +1,56 @@
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ContactLeft from '../components/ContactLeft';
 import ContactRight from '../components/ContactRight';
 import GitDock from '../components/GitDock';
 import RepelText from '../components/RepelText';
 
+gsap.registerPlugin(ScrollTrigger);
+
 const Contact = () => {
+  const containerRef = useRef(null);
+
+  useGSAP(
+    () => {
+      // Heading slides in from the left
+      gsap.from('.contact-anim-heading', {
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 75%',
+          once: true,
+        },
+        x: -70,
+        opacity: 0,
+        filter: 'blur(8px)',
+        duration: 1,
+        ease: 'power3.out',
+        clearProps: 'filter',
+      });
+
+      // Panels slide in with subtle stagger
+      gsap.from('.contact-anim-panel', {
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 75%',
+          once: true,
+        },
+        y: 45,
+        opacity: 0,
+        filter: 'blur(8px)',
+        duration: 0.95,
+        delay: 0.15,
+        ease: 'power3.out',
+        clearProps: 'filter',
+      });
+    },
+    { scope: containerRef }
+  );
+
   return (
     <div
+      ref={containerRef}
       id="contact"
       className="relative flex min-h-screen w-full flex-col items-stretch overflow-visible bg-(--ink) lg:flex-row lg:items-center py-12 lg:py-16"
     >
@@ -22,7 +67,7 @@ const Contact = () => {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(212,175,55,0.04),transparent_60%),radial-gradient(ellipse_at_75%_40%,rgba(244,241,234,0.03),transparent_50%)]" />
 
       {/* Heading: kicker + horizontal title on mobile, vertical sidebar on desktop */}
-      <div className="relative z-10 flex w-full shrink-0 flex-col items-start justify-center px-6 pt-14 pb-8 lg:h-full lg:w-20 lg:items-center lg:px-0 lg:py-0">
+      <div className="contact-anim-heading relative z-10 flex w-full shrink-0 flex-col items-start justify-center px-6 pt-14 pb-8 lg:h-full lg:w-20 lg:items-center lg:px-0 lg:py-0">
         {/* Mobile heading */}
         <div className="flex flex-col lg:hidden">
           <h1 className="font-display mt-1.5 text-4xl text-(--paper) cursor-default">
@@ -42,7 +87,7 @@ const Contact = () => {
       <div className="z-10 hidden h-3/5 w-px shrink-0 bg-(--paper)/10 lg:block" />
 
       {/* Two symmetric panels */}
-      <div className="relative z-10 flex w-full flex-1 flex-col-reverse lg:h-full lg:flex-row lg:items-center justify-end">
+      <div className="contact-anim-panel relative z-10 flex w-full flex-1 flex-col-reverse lg:h-full lg:flex-row lg:items-center justify-end">
         {/* Left panel */}
         <div className="flex w-full items-center justify-center border-t border-(--paper)/6 px-6 py-10 lg:h-full lg:flex-1 lg:border-t-0 lg:px-12 lg:py-0">
           <ContactLeft />
