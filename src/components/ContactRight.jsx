@@ -1,3 +1,4 @@
+import { useState, useRef } from 'react';
 import Magnetic from './Magnetic';
 import RollingText from './RollingText';
 
@@ -16,7 +17,43 @@ const fields = [
   },
 ];
 
+// Access key loaded from .env (VITE_WEB3FORMS_KEY)
+const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
+
 const ContactRight = () => {
+  const formRef = useRef(null);
+  const [status, setStatus] = useState('idle'); // idle | sending | success | error
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('sending');
+
+    const formData = new FormData(formRef.current);
+    formData.append('access_key', WEB3FORMS_KEY);
+    formData.append('subject', `Portfolio Contact from ${formData.get('username')}`);
+    formData.append('from_name', 'Pritamx4 Portfolio');
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setStatus('success');
+        formRef.current.reset();
+        setTimeout(() => setStatus('idle'), 4000);
+      } else {
+        setStatus('error');
+        setTimeout(() => setStatus('idle'), 4000);
+      }
+    } catch {
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 4000);
+    }
+  };
+
   return (
     <div className="flex w-full flex-col">
       {/* Header */}
@@ -35,7 +72,10 @@ const ContactRight = () => {
       </div>
 
       {/* Form */}
-      <form action="" method="post" className="flex flex-col text-(--paper)">
+      <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col text-(--paper)">
+        {/* Honeypot anti-spam (hidden from users) */}
+        <input type="checkbox" name="botcheck" className="hidden" />
+
         {/* Input fields */}
         {fields.map((f) => (
           <div
@@ -50,7 +90,8 @@ const ContactRight = () => {
               name={f.name}
               placeholder={f.placeholder}
               required
-              className="font-body w-full bg-transparent text-sm tracking-wide text-(--paper) outline-none placeholder:text-(--paper)/35 focus:placeholder:text-(--paper)/20 transition-colors"
+              disabled={status === 'sending'}
+              className="font-body w-full bg-transparent text-sm tracking-wide text-(--paper) outline-none placeholder:text-(--paper)/35 focus:placeholder:text-(--paper)/20 transition-colors disabled:opacity-50"
             />
           </div>
         ))}
@@ -65,7 +106,8 @@ const ContactRight = () => {
             placeholder="Tell me what's on your mind..."
             rows="2"
             required
-            className="font-body w-full resize-none bg-transparent text-sm tracking-wide text-(--paper) outline-none placeholder:text-(--paper)/35 focus:placeholder:text-(--paper)/20 transition-colors"
+            disabled={status === 'sending'}
+            className="font-body w-full resize-none bg-transparent text-sm tracking-wide text-(--paper) outline-none placeholder:text-(--paper)/35 focus:placeholder:text-(--paper)/20 transition-colors disabled:opacity-50"
           />
         </div>
 
@@ -73,9 +115,20 @@ const ContactRight = () => {
         <Magnetic strength={0.25} className="mt-6 w-full lg:w-fit">
           <button
             type="submit"
-            className="font-ui group flex w-full items-center justify-center gap-3 border border-(--paper)/30 bg-transparent px-7 py-3 text-xs uppercase tracking-[0.2em] font-medium text-(--paper) transition-all duration-300 hover:border-(--paper) hover:bg-(--paper) hover:text-(--ink) hover:shadow-[0_0_30px_rgba(244,241,234,0.15)] active:scale-[0.97] cursor-pointer lg:w-fit lg:justify-start"
+            disabled={status === 'sending'}
+            className="font-ui group flex w-full items-center justify-center gap-3 border border-(--paper)/30 bg-transparent px-7 py-3 text-xs uppercase tracking-[0.2em] font-medium text-(--paper) transition-all duration-300 hover:border-(--paper) hover:bg-(--paper) hover:text-(--ink) hover:shadow-[0_0_30px_rgba(244,241,234,0.15)] active:scale-[0.97] cursor-pointer lg:w-fit lg:justify-start disabled:opacity-50 disabled:cursor-wait"
           >
-            <RollingText text="Send Message" />
+            <RollingText
+              text={
+                status === 'sending'
+                  ? 'Sending...'
+                  : status === 'success'
+                    ? '✓ Message Sent!'
+                    : status === 'error'
+                      ? '✕ Try Again'
+                      : 'Send Message'
+              }
+            />
             <lord-icon
               className="current-color"
               src="https://cdn.lordicon.com/vpbspaec.json"
@@ -87,6 +140,18 @@ const ContactRight = () => {
             ></lord-icon>
           </button>
         </Magnetic>
+
+        {/* Status feedback */}
+        {status === 'success' && (
+          <p className="font-ui mt-4 text-[11px] uppercase tracking-[0.25em] text-green-400/90 animate-pulse">
+            ✓ Message delivered successfully — I'll get back to you soon!
+          </p>
+        )}
+        {status === 'error' && (
+          <p className="font-ui mt-4 text-[11px] uppercase tracking-[0.25em] text-red-400/90">
+            ✕ Something went wrong. Please try again or email me directly.
+          </p>
+        )}
       </form>
     </div>
   );
