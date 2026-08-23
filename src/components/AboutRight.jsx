@@ -29,7 +29,13 @@ const AboutRight = () => {
         </ul>
 
         <div className="mt-8">
-          <Button text="Timeline" />
+          {/* <Button text="Timeline" /> */}
+          <Button
+            text="Resume"
+            onClick={() => {
+              window.open('/resume.pdf', '_blank', 'noopener,noreferrer');
+            }}
+          />
         </div>
       </div>
     </div>

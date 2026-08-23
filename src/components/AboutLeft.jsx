@@ -1,4 +1,5 @@
 import RepelText from './RepelText';
+import ScrambleText from './ScrambleText';
 
 const AboutLeft = () => {
   return (
@@ -23,29 +24,31 @@ const AboutLeft = () => {
           design and code.
         </p>
 
-        {/* Stats — hairline-divided */}
+        {/* Stats — hairline-divided with ScrambleText */}
         <div className="mt-10 grid grid-cols-3 border-t border-(--paper)/12 pt-6">
-          <div className="flex flex-col items-start border-r border-(--paper)/12 pr-4">
+          <div className="group flex flex-col items-start border-r border-(--paper)/12 pr-4 cursor-default">
             <span className="font-heading text-2xl sm:text-3xl text-(--paper) tracking-normal">
-              2024
+              <ScrambleText text="2024" speed={30} />
             </span>
-            <span className="font-ui mt-1.5 text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-(--paper)/55 font-medium">
+            <span className="font-ui mt-1.5 text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-(--paper)/55 font-medium transition-colors group-hover:text-(--paper)/80">
               Since
             </span>
           </div>
-          <div className="flex flex-col items-start border-r border-(--paper)/12 px-4">
+          <div className="group flex flex-col items-start border-r border-(--paper)/12 px-4 cursor-default">
             <span className="font-heading text-2xl sm:text-3xl text-(--paper) tracking-normal">
-              4<span className="text-base sm:text-lg text-(--paper)/75 ml-0.5 font-mono">+</span>
+              <ScrambleText text="4" speed={40} />
+              <span className="text-base sm:text-lg text-(--paper)/75 ml-0.5 font-mono">+</span>
             </span>
-            <span className="font-ui mt-1.5 text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-(--paper)/55 font-medium">
+            <span className="font-ui mt-1.5 text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-(--paper)/55 font-medium transition-colors group-hover:text-(--paper)/80">
               Projects
             </span>
           </div>
-          <div className="flex flex-col items-start pl-4">
+          <div className="group flex flex-col items-start pl-4 cursor-default">
             <span className="font-heading text-2xl sm:text-3xl text-(--paper) tracking-normal">
-              12<span className="text-base sm:text-lg text-(--paper)/75 ml-0.5 font-mono">+</span>
+              <ScrambleText text="12" speed={35} />
+              <span className="text-base sm:text-lg text-(--paper)/75 ml-0.5 font-mono">+</span>
             </span>
-            <span className="font-ui mt-1.5 text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-(--paper)/55 font-medium">
+            <span className="font-ui mt-1.5 text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-(--paper)/55 font-medium transition-colors group-hover:text-(--paper)/80">
               Tech Stack
             </span>
           </div>

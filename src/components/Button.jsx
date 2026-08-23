@@ -8,9 +8,11 @@ const Button = (props) => {
       ? 'https://cdn.lordicon.com/motnbmtz.json'
       : props.text === 'Projects'
         ? 'https://cdn.lordicon.com/tsrgicte.json'
-        : props.text === 'Timeline'
-          ? 'https://cdn.lordicon.com/xnusbqxr.json'
-          : null;
+        : props.text === 'Resume'
+          ? 'https://cdn.lordicon.com/wzwygmng.json'
+          : props.text === 'Timeline'
+            ? 'https://cdn.lordicon.com/xnusbqxr.json'
+            : null;
 
   return (
     <Magnetic strength={0.28}>
